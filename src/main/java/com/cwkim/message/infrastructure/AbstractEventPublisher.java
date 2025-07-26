@@ -10,6 +10,10 @@ public abstract class AbstractEventPublisher<T> {
     public void publish(T msg) {
         String channel = getChannel();
         Object message = setMessage(msg);
-        send(channel, message);
+        try {
+            send(channel, message);
+        }catch (Exception e){
+            throw e;
+        }
     }
 }

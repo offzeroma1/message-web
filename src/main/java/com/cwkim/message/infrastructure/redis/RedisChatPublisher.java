@@ -30,14 +30,19 @@ public class RedisChatPublisher extends AbstractEventPublisher<RedisChatVo> {
     protected void send(String channel, Object message) {
         try{
            Long subs = redisTemplate.convertAndSend(channel, message);
-           log.info("[SUCCESS] send redis message. ");
+           log.info("[SUCCESS] send Redis message. ");
            if(subs == 0){
                log.info("{} 의 구독자가 0입니다.", channel);
            }
         }catch (RedisConnectionFailureException e) {
-            log.error("Redis 연결 실패: {}", e.getMessage());
+            log.error("[FAIL] Redis 연결 실패: {}", e.getMessage());
+            throw e;
         }catch (RuntimeException e){
-            log.error("Redis 메시지 전송 중 예기치 못한 오류: {}", e.getMessage());
+            log.error("[FAIL] Redis 메시지 전송 중 예기치 못한 오류: {}", e.getMessage());
+            throw e;
+        }catch (Exception e){
+            log.error("[FAIL] Redis 메시지 전송 중 예기치 못한 오류: {}", e.getMessage());
+            throw e;
         }
     }
 }
